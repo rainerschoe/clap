@@ -25,6 +25,8 @@ bitflags! {
         const NO_POS_VALUES                  = 1 << 17;
         const NEXT_LINE_HELP                 = 1 << 18;
         const DERIVE_DISP_ORDER              = 1 << 19;
+        #[cfg(feature = "color")]
+        const DISABLE_COLORED_HELP           = 1 << 20;
         const COLOR_ALWAYS                   = 1 << 21;
         const COLOR_AUTO                     = 1 << 22;
         const COLOR_NEVER                    = 1 << 23;
@@ -97,6 +99,9 @@ impl_settings! { AppSettings, AppFlags,
         => Flags::DONT_COLLAPSE_ARGS,
     DeriveDisplayOrder("derivedisplayorder")
         => Flags::DERIVE_DISP_ORDER,
+    #[cfg(feature = "color")]
+    DisableColoredHelp("disablecoloredhelp")
+        => Flags::DISABLE_COLORED_HELP,
     DisableHelpSubcommand("disablehelpsubcommand")
         => Flags::DISABLE_HELP_SC,
     DisableHelpFlag("disablehelpflag")
@@ -557,6 +562,19 @@ pub enum AppSettings {
     ///
     /// [`Arg::use_delimiter(false)`]: crate::Arg::use_delimiter()
     DontDelimitTrailingValues,
+
+    /// Disables colorized help messages.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # use clap::{App, AppSettings};
+    /// App::new("myprog")
+    ///     .setting(AppSettings::DisableColoredHelp)
+    ///     .get_matches();
+    /// ```
+    #[cfg(feature = "color")]
+    DisableColoredHelp,
 
     /// Disables `-h` and `--help` flag.
     ///
@@ -1172,6 +1190,11 @@ mod test {
         assert_eq!(
             "derivedisplayorder".parse::<AppSettings>().unwrap(),
             AppSettings::DeriveDisplayOrder
+        );
+        #[cfg(feature = "color")]
+        assert_eq!(
+            "disablecoloredhelp".parse::<AppSettings>().unwrap(),
+            AppSettings::DisableColoredHelp
         );
         assert_eq!(
             "propagateversion".parse::<AppSettings>().unwrap(),
