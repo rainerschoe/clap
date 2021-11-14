@@ -179,6 +179,7 @@ fn value_completion(option: &Arg) -> String {
             }
             ValueHint::Username => " -r -f -a \"(__fish_complete_users)\"",
             ValueHint::Hostname => " -r -f -a \"(__fish_print_hostnames)\"",
+            ValueHint::DynamicValues(command) => "-r -f -a \"(" + command + ")\"",
             // Disable completion for others
             _ => " -r -f",
         }

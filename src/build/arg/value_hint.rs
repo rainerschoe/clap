@@ -19,6 +19,7 @@ use std::str::FromStr;
 /// | `Hostname`             | Yes | Yes     |
 /// | `Url`                  | Yes |         |
 /// | `EmailAddress`         | Yes |         |
+/// | `DynamicValues`        |     | Yes     |
 ///
 /// [^1]: fish completions currently only support named arguments (e.g. -o or --opt), not
 ///       positional arguments.
@@ -61,6 +62,34 @@ pub enum ValueHint {
     Url,
     /// Email address.
     EmailAddress,
+
+    /// Values which are to be retrieved dynamically at runtime by calling an external command.
+    /// The given string is the command which will be executed at runtime to generate a list of
+    /// possible values.
+    /// This is useful if values depend on external services or user input.
+    /// For example a list of nearby cities or files on a remote server.
+    ///
+    /// The given command will get all the arguments which are given to the executable.
+    /// It is expected to return a list of possible values separated by newline `\n`.
+    /// Optionally each possible value may also contain a documentation string
+    /// separated by a tabulator `\t`. Depending on the shell, this will be used
+    /// to display documentation.
+    ///
+    /// Example:
+    ///     1. DynamicValue Hint is set to `helloCity --getNearbyCities`
+    ///
+    ///     2.User types: `helloCity --zipcode 12345 --city ` + TAB
+    ///
+    ///     3. The following will be evaluated in the shell to get a list of possible values:
+    ///        `helloCity --getNearbyCities --zipcode 12345 --city`
+    ///        The stdout output  of the above command should be something like this:
+    ///        ```
+    ///        Berlin \t Capital of Germany
+    ///        Potsdam \t City near Berlin
+    ///        Spandau \t City with lots of waterways
+    ///        ```
+    ///     4. This will result in three possible values being used for completion
+    DynamicValues(String)
 }
 
 impl Default for ValueHint {
