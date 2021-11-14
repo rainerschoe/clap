@@ -263,7 +263,7 @@ impl<'help> Arg<'help> {
 
     /// Get the value hint of this argument
     pub fn get_value_hint(&self) -> ValueHint {
-        self.value_hint
+        self.value_hint.clone()
     }
 
     /// Get information on if this argument is global or not

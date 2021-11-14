@@ -168,21 +168,27 @@ fn value_completion(option: &Arg) -> String {
     } else {
         // NB! If you change this, please also update the table in `ValueHint` documentation.
         match option.get_value_hint() {
-            ValueHint::Unknown => " -r",
+            ValueHint::Unknown => " -r".to_string(),
             // fish has no built-in support to distinguish these
-            ValueHint::AnyPath | ValueHint::FilePath | ValueHint::ExecutablePath => " -r -F",
-            ValueHint::DirPath => " -r -f -a \"(__fish_complete_directories)\"",
+            ValueHint::AnyPath | ValueHint::FilePath | ValueHint::ExecutablePath => " -r -F".to_string(),
+            ValueHint::DirPath => " -r -f -a \"(__fish_complete_directories)\"".to_string(),
             // It seems fish has no built-in support for completing command + arguments as
             // single string (CommandString). Complete just the command name.
             ValueHint::CommandString | ValueHint::CommandName => {
-                " -r -f -a \"(__fish_complete_command)\""
-            }
-            ValueHint::Username => " -r -f -a \"(__fish_complete_users)\"",
-            ValueHint::Hostname => " -r -f -a \"(__fish_print_hostnames)\"",
-            ValueHint::DynamicValues(command) => "-r -f -a \"(" + command + ")\"",
+                " -r -f -a \"(__fish_complete_command)\"".to_string()
+            },
+            ValueHint::Username => " -r -f -a \"(__fish_complete_users)\"".to_string(),
+            ValueHint::Hostname => " -r -f -a \"(__fish_print_hostnames)\"".to_string(),
+
+            // -p selects commandline for current process only (commandline might consist of
+            // multiple commands, think of pipes, semicolons, etc.)
+            // -o tokeinizes the commandline as fish would do it, so we can feed them back as
+            // arguments
+            ValueHint::DynamicValues(cmd) => "-r -f -a \"(".to_string() + &cmd + " (commandline -p -o)[2..-1])\"",
+
             // Disable completion for others
-            _ => " -r -f",
+            _ => " -r -f".to_string(),
         }
-        .to_string()
+        //.to_string()
     }
 }
