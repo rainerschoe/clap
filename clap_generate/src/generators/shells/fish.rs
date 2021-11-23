@@ -166,6 +166,8 @@ fn value_completion(option: &Arg) -> String {
                 .join(",")
         )
     } else {
+        // DISCUSS: Fancy switch() in rust: match()
+        // DISCUSS: String vs str
         // NB! If you change this, please also update the table in `ValueHint` documentation.
         match option.get_value_hint() {
             ValueHint::Unknown => " -r".to_string(),
@@ -184,7 +186,7 @@ fn value_completion(option: &Arg) -> String {
             // multiple commands, think of pipes, semicolons, etc.)
             // -o tokeinizes the commandline as fish would do it, so we can feed them back as
             // arguments
-            ValueHint::DynamicValues(cmd) => "-r -f -a \"(".to_string() + &cmd + " (commandline -p -o)[2..-1])\"",
+            ValueHint::DynamicValues(cmd) => " -r -f -a \"(".to_string() + &cmd + " (commandline -p -o)[2..-1])\"",
 
             // Disable completion for others
             _ => " -r -f".to_string(),

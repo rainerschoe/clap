@@ -24,6 +24,8 @@ use std::str::FromStr;
 ///
 /// [^1]: fish completions currently only support named arguments (e.g. -o or --opt), not
 ///       positional arguments.
+// DISCUSS: Copy Trait
+// DISCUSS: Fancy rust enum
 #[derive(Debug, PartialEq, Clone)]
 pub enum ValueHint {
     /// Default value if hint is not specified. Follows shell default behavior, which is usually
